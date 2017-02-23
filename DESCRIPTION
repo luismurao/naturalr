@@ -1,0 +1,16 @@
+Package: naturalr
+Type: Package
+Title: Access natualista data through APIs
+Version: 0.0.1
+Date: 2016-04-20
+Author: -
+Maintainer: -
+Description: A programmatic interface to the
+    API provided by the naturalista website.
+License: MIT + file LICENSE
+Imports:
+    httr,
+    plyr,
+    jsonlite,
+    ggplot2,
+    maps

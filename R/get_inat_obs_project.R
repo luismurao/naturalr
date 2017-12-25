@@ -7,9 +7,10 @@
 #'
 #'@examples \dontrun{
 #'  get_inat_obs_project(354, type = "observations")
-#'  get_inat_obs_project("crows-in-vermont", type="info",raw=FALSE) 
+#'  get_inat_obs_project("crows-in-vermont", type="info",raw=FALSE)
 #'}
 #'@import httr jsonlite
+#'@import utils
 #'@export
 
 get_inat_obs_project <- function(grpid,type = c("observations","info"), raw = F){
@@ -19,13 +20,13 @@ get_inat_obs_project <- function(grpid,type = c("observations","info"), raw = F)
   url= paste("http://www.naturalista.mx/projects/",grpid,".json",sep="")
   xx = fromJSON(content(GET(url),as="text"))
   recs =xx$project_observations_count
- 
+
   ### Error handling for empty projects
   dat = NULL
   if(is.null(recs))(return(dat))
   cat(paste(recs," Records\n0"))
-  
-  
+
+
   if(argstring == "info"){
     output <- list()
     output[["title"]] <- xx$title
@@ -40,20 +41,20 @@ get_inat_obs_project <- function(grpid,type = c("observations","info"), raw = F)
     if(raw){
       output[["raw"]] <- xx
     }
-    
-    
+
+
     return(output)
   } else if(argstring == "obs"){
-  
+
   if (recs %% 100 == 0){loopval<-recs %/% 100}
   else{loopval <-(recs %/% 100)+1}
   for(i in 1:loopval){
     url1=paste("http://www.naturalista.mx/observations/project/",grpid,".csv?page=",i,"&per_page=100",sep="")
     cat(paste("-",i*100,sep=""))
-    newdat=read.csv(url1,stringsAsFactors = FALSE)
+    newdat=utils::read.csv(url1,stringsAsFactors = FALSE)
     dat=rbind(dat,newdat)
   }
   return(dat)
 }
-  
+
 }

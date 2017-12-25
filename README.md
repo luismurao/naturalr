@@ -29,7 +29,7 @@ Plot a leaflet map that displays basic information like species description and 
 inat_map(puma_occs,imagePreview=T)
 ```
 
-[![](img/puma_concolor.png)](https://github.com/luismurao/naturalr)
+<a href="https://luismurao.github.io/puma_example.html" target="_blank"><div style='text-align: center;'><img src="img/puma_concolor.png" height='700' width='1200' align='middle' ></div></a>
 
 
 ## Acknowledgments

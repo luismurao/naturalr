@@ -18,15 +18,17 @@ inat_map <- function(data){
     data$sp_info <- paste0("https://es.wikipedia.org/wiki/",
                            gsub(x = data$scientific_name[1],pattern = " ",
                                 replacement = "_"))
-    data$data_rowID <- paste("<b>Species:</b><a href='",data$sp_info,"'> ",
+    data$data_rowID <- paste("<b>Species: </b><a href='",data$sp_info,"'>",
                              data$scientific_name,"</a><br/>",
                              "<b>rowID:</b>",1:dim(data)[1],
                              "<br/><b>observed on: </b>",
                              data$observed_on,
                              "<br/><b>captive or cultivated:</b>",
                              data$captive_cultivated,
+                             "<br/><b>Record url: </b><a href='",data$url,
+                             "'>click</a>",
                              "<br/><b>Image url: </b><a href='",data$image_url,
-                             "'>click </a><br/>")
+                             "'>click, </a><br/>")
     m <- leaflet(data) %>%
       addTiles() %>%  # Add default OpenStreetMap map tiles
       addMarkers(lng=~longitude, lat=~latitude, popup= ~data_rowID)

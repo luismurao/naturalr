@@ -28,8 +28,7 @@ Plot a leaflet map that displays basic information like species description and 
 ``` r
 inat_map(puma_occs,imagePreview=T)
 ```
-
-<iframe src="https://luismurao.github.io/puma_example.html"  width="900" height="780" style="border: none;"></iframe>
+<iframe src="https://luismurao.github.io/puma_example.html"  frameborder="0" width="560" height="315" style="border: none;"></iframe>
 
 
 

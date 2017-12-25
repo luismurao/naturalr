@@ -4,10 +4,12 @@
 \alias{inat_map}
 \title{Plot iNaturalist observations}
 \usage{
-inat_map(data)
+inat_map(data, imgPreview = T)
 }
 \arguments{
 \item{data}{data frame of iNaturalist observations}
+
+\item{imagePreview}{Logical if TRUE the image of the record will be shown.}
 }
 \value{
 a leaflet map object
@@ -17,9 +19,10 @@ Plot observations from iNaturalist for Mexico.
 }
 \examples{
 \dontrun{
-  m_obs <- get_inat_obs(taxon="Ambystoma maculatum")
-  salamander_map <- inat_map(m_obs,plot=FALSE)
-  ### Now we can modify the returned map
-  salamander_map + borders("state") + theme_bw()
+puma_occs <- get_inat_obs(query = "Puma concolor",
+                          geo = T,maxresults = 10000,
+                         captive_cultivated = F)
+inat_map(puma_occs)
+
 }
 }

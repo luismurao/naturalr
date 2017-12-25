@@ -1,34 +1,36 @@
 #' Plot iNaturalist observations
 #'
-#' @description Plot observations from iNaturalist.  You have the option of automatically plotting, or returning a ggplot map object that you can add layers on to.
+#' @description Plot observations from iNaturalist for Mexico.
 #' @param data data frame of iNaturalist observations
-#' @param map the map region to plot, you can find full documentation in the \code{\link{map}} package, default is usa.
-#' @param subregion the name of the subregion to plot, see full documentation in the \code{\link{map}} package
-#' @param plot a TRUE or FALSE variable, TRUE plots the map object and returns it, and FALSE returns a ggplot2 object that you can modify and plot later
 #'
-#' @return a ggplot2 map object
+#' @return a leaflet map object
 #' @examples \dontrun{
 #'   m_obs <- get_inat_obs(taxon="Ambystoma maculatum")
 #'   salamander_map <- inat_map(m_obs,plot=FALSE)
 #'   ### Now we can modify the returned map
 #'   salamander_map + borders("state") + theme_bw()
 #' }
-#' @import maps ggplot2
+#' @import leaflet leaflet
 #' @export
 
-inat_map <- function(data, map = "usa",subregion=".",plot=TRUE){
-  map_df <- map_data(map, region = subregion)
-  base_map <-
-    ggplot(map_df, aes(x = long, y = lat)) +
-      geom_polygon(aes(group = group), fill="white", color="gray40", size=0.2)
-  sp_map <- base_map +
-    geom_point(data = data, aes(x = longitude, y = latitude))
-
-  if(plot){
-    print(sp_map)
-    return(sp_map)
-  } else {
-    return(sp_map)
+inat_map <- function(data){
+  if(is.data.frame(data)){
+    data$sp_info <- paste0("https://es.wikipedia.org/wiki/",
+                           gsub(x = data$scientific_name[1],pattern = " ",
+                                replacement = "_"))
+    data$data_rowID <- paste("<b>Species:</b><a href='",data$sp_info,"'> ",
+                             data$scientific_name,"</a><br/>",
+                             "<b>rowID:</b>",1:dim(data)[1],
+                             "<br/><b>observed on: </b>",
+                             data$observed_on,
+                             "<br/><b>Image url: </b><a href='",data$image_url,
+                             "'>click </a><br/>")
+    m <- leaflet(data) %>%
+      addTiles() %>%  # Add default OpenStreetMap map tiles
+      addMarkers(lng=~longitude, lat=~latitude, popup= ~data_rowID)
+    return(m)  # Pr
   }
 
 }
+
+

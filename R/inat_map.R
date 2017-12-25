@@ -23,6 +23,8 @@ inat_map <- function(data){
                              "<b>rowID:</b>",1:dim(data)[1],
                              "<br/><b>observed on: </b>",
                              data$observed_on,
+                             "<br/><b>captive or cultivated:</b>",
+                             data$captive_cultivated,
                              "<br/><b>Image url: </b><a href='",data$image_url,
                              "'>click </a><br/>")
     m <- leaflet(data) %>%

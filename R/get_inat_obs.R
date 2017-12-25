@@ -147,9 +147,12 @@ get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NU
   }
 
   if(is.data.frame(data_out)){
+    not_captive_index <- which(data_out$captive_cultivated=="false")
     if(!captive_cultivated){
-      not_captive_index <- which(data_out$captive_cultivated=="false")
       data_out <- data_out[not_captive_index,]
+    }
+    if(captive_cultivated){
+      data_out <- data_out[-not_captive_index,]
     }
 
     if(maxresults < dim(data_out)[1]){

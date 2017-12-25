@@ -1,43 +1,44 @@
 #' Download inaturalist data
-#' 
-#' @description Primary function to retrieve observations from iNaturalist, allows users to search 
+#'
+#' @description Primary function to retrieve observations from iNaturalist, allows users to search
 #' for data, or just filter results by a subset of what is offered by the API
 #' @param query Query string for a general search
-#' @param quality the quality grade to be used.  Must be either "casual" or "research"  If left 
+#' @param quality the quality grade to be used.  Must be either "casual" or "research"  If left
 #' blank both will be returned.
-#' @param taxon_name Filter by iNat taxon name. Note that this will also select observations of 
-#' descendant taxa. Note that names are not unique, so if the name matches multiple taxa, no 
+#' @param taxon_name Filter by iNat taxon name. Note that this will also select observations of
+#' descendant taxa. Note that names are not unique, so if the name matches multiple taxa, no
 #' observations may be returned.
 #' @param taxon_id Filter by iNat taxon ID. Note that this will also select observations of descendant taxa.
-#' @param geo flag for returning only results that are georeferenced, TRUE will exclude 
+#' @param geo flag for returning only results that are georeferenced, TRUE will exclude
 #' non-georeferenced results, but they cannot be excluded.
 #' @param year return observations only in that year (can only be one year, not a range of years)
 #' @param month return observations only by month, must be numeric, 1...12
 #' @param day return observations only on a given day of the month,  1...31
-#' @param bounds a bounding box of longitude (-180 to 180) and latitude (-90 to 90) to search 
-#' within.  It is a vector in the form of southern latitude, western longitude, northern latitude, 
+#' @param bounds a bounding box of longitude (-180 to 180) and latitude (-90 to 90) to search
+#' within.  It is a vector in the form of southern latitude, western longitude, northern latitude,
 #' and easter longitude
 #' @param maxresults the maximum number of results to return
+#' @param captive_cultivated return captive or cultivated records.
 #' @param meta (logical) If TRUE, the output of this function is a list with metadata on the output
 #' and a data.frame of the data. If FALSE (default), just the data.frame.
-#' @note Filtering doesn't always work with the query parameter for some reason (a problem on 
-#' the API end).  If you want to filter by time, it's best to use the scientific name and put it 
-#' in the 'taxa' field, and not in the query field.  Another issue is that the query parameter 
-#' will search the entire entry, so it is possible to get unintended results.  Depending on your 
+#' @note Filtering doesn't always work with the query parameter for some reason (a problem on
+#' the API end).  If you want to filter by time, it's best to use the scientific name and put it
+#' in the 'taxa' field, and not in the query field.  Another issue is that the query parameter
+#' will search the entire entry, so it is possible to get unintended results.  Depending on your
 #' use case it may be advisable to use the "taxon" field instead of the query field.
 #' @return a dataframe of the number of observations requestsed
 #' @examples \dontrun{
 #'   ### Make a standard query
 #'   get_inat_obs(query="Monarch Butterfly")
-#'   
+#'
 #'   ##Filter by a bounding box of Northern California
 #'   bounds <- c(38.44047,-125,40.86652,-121.837)
 #'   get_inat_obs(query="Mule Deer", bounds=bounds)
-#'   
-#'   ## Filter with by just taxon, allows higher order filtering, 
+#'
+#'   ## Filter with by just taxon, allows higher order filtering,
 #'   ## Here we can search for just stone flies (order plecoptera)
 #'   get_inat_obs(taxon="Plecoptera")
-#'   
+#'
 #'   ## get metadata (the number of results found on the server)
 #'   out <- get_inat_obs(query="Monarch Butterfly", meta=TRUE)
 #'   out$meta
@@ -45,43 +46,43 @@
 #' @import httr plyr
 #' @export
 
-get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NULL,geo=NULL,year=NULL,month=NULL,day=NULL,bounds=NULL,maxresults=100,meta=FALSE)
-{  
-  
+get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NULL,geo=NULL,year=NULL,month=NULL,day=NULL,bounds=NULL,maxresults=100,captive_cultivated=FALSE,meta=FALSE)
+{
+
   ## Parsing and error-handling of input strings
   search <- ""
   if(!is.null(query)){
     search <- paste(search,"&q=",gsub(" ","+",query),sep="")
   }
-  
+
   if(!is.null(quality)){
     if(!sum(grepl(quality,c("casual","research")))){
       stop("Please enter a valid quality flag,'casual' or 'research'.")
     }
-    
+
     search <- paste(search,"&quality_grade=",quality,sep="")
   }
-  
+
   if(!is.null(taxon_name)){
     search <-  paste(search,"&taxon_name=",gsub(" ","+",taxon_name),sep="")
   }
-  
+
   if(!is.null(taxon_id)){
     search <-  paste(search,"&taxon_id=",gsub(" ","+",taxon_id),sep="")
   }
-  
-  
+
+
   if(!is.null(geo) && geo){
     search <- paste(search,"&has[]=geo",sep="")
   }
-  
+
   if(!is.null(year)){
     if(length(year) > 1){
       stop("you can only filter results by one year, please enter only one value for year")
     }
     search <- paste(search,"&year=",year,sep="")
   }
-  
+
   if(!is.null(month)){
     month <- as.numeric(month)
     if(is.na(month)){
@@ -93,7 +94,7 @@ get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NU
     if(month < 1 || month > 12){ stop("Please enter a valid month between 1 and 12")}
     search <- paste(search,"&month=",month,sep="")
   }
-  
+
   if(!is.null(day)){
     day <- as.numeric(day)
     if(is.na(day)){
@@ -103,16 +104,16 @@ get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NU
       stop("you can only filter results by one day, please enter only one value for day")
     }
     if(day < 1 || day > 31){ stop("Please enter a valid day between 1 and 31")}
-    
+
     search <- paste(search,"&day=",day,sep="")
   }
-  
+
   if(!is.null(bounds)){
     if(length(bounds) != 4){stop("bounding box specifications must have 4 coordinates")}
     search <- paste(search,"&swlat=",bounds[1],"&swlng=",bounds[2],"&nelat=",bounds[3],"&nelng=",bounds[4],sep="")
-    
+
   }
-  
+
   #base_url <- "http://www.inaturalist.org/"
   base_url <- "http://www.naturalista.mx/"
   q_path <- "observations.csv"
@@ -123,18 +124,18 @@ get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NU
   ### that come down in CSV format
   ping <-  GET(base_url, path = ping_path, query = ping_query)
   total_res <- as.numeric(ping$headers$`x-total-entries`)
-  
+
   if(total_res == 0){
     stop("Your search returned zero results.  Either your species of interest has no records or you entered an invalid search")
   } else if(total_res >= 200000) {
     stop("Your search returned too many results, please consider breaking it up into smaller chunks by year or month")
   }
-  
+
   page_query <- paste(search,"&per_page=200&page=1",sep="")
   data <-  GET(base_url, path = q_path, query = page_query)
   data <- inat_handle(data)
   data_out <- if(is.na(data)) NA else read.csv(textConnection(data), stringsAsFactors = FALSE)
-  
+
   if(total_res < maxresults) maxresults <- total_res
   if(maxresults > 200){
     for(i in 2:ceiling(maxresults/200)){
@@ -144,15 +145,20 @@ get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NU
       data_out <- rbind(data_out, read.csv(textConnection(data), stringsAsFactors = FALSE))
     }
   }
-  
+
   if(is.data.frame(data_out)){
+    if(!captive_cultivated){
+      not_captive_index <- which(data_out$captive_cultivated=="false")
+      data_out <- data_out[not_captive_index,]
+    }
+
     if(maxresults < dim(data_out)[1]){
       data_out <- data_out[1:maxresults,]
     }
   }
 
-  if(meta){ 
-    return(list(meta=list(found=total_res, returned=nrow(data_out)), data=data_out)) 
+  if(meta){
+    return(list(meta=list(found=total_res, returned=nrow(data_out)), data=data_out))
   } else { return(data_out) }
 }
 

@@ -1,14 +1,19 @@
 Package: naturalr
 Type: Package
-Title: Access naturalista data through APIs
+Title: Access naturalista data from Mexico through APIs
+Author: Luis Osorio-Olvera, Mariana Muguia.
+Maintainer: Luis Osorio-Olvera <luismurao@gamilcom>
 Version: 0.0.1
 Date: 2016-04-20
 Description: A programmatic interface to the
-    API provided by the naturalista website, the package is a clon of rinat.
+    API provided by the naturalista website, the package is a clon of rinat modified to return data only for mexico.
 License: MIT + file LICENSE
 Imports:
     httr,
     plyr,
     jsonlite,
     ggplot2,
-    maps
+    maps,
+    leaflet,
+    devtools
+RoxygenNote: 6.0.1

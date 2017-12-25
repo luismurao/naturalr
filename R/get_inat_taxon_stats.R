@@ -18,7 +18,7 @@
 
 get_inat_taxon_stats <- function(date = NULL, date_range = NULL, place = NULL, project = NULL, uid=NULL){
   
-  base_url <- "http://www.inaturalist.org/"
+  base_url <- "http://www.naturalista.mx/"
   q_path <- "observations/taxon_stats.json"
   search = ""
   

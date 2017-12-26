@@ -9,7 +9,7 @@ inat_map(data, imgPreview = T)
 \arguments{
 \item{data}{data frame of iNaturalist observations}
 
-\item{imagePreview}{Logical if TRUE the image of the record will be shown.}
+\item{imgPreview}{Logical if TRUE the image of the record will be shown.}
 }
 \value{
 a leaflet map object
@@ -22,7 +22,7 @@ Plot observations from iNaturalist for Mexico.
 puma_occs <- get_inat_obs(query = "Puma concolor",
                           geo = T,maxresults = 10000,
                          captive_cultivated = F)
-inat_map(puma_occs)
+inat_map(puma_occs, imgPreview=TRUE)
 
 }
 }

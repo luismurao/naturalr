@@ -2,13 +2,13 @@
 #'
 #' @description Plot observations from iNaturalist for Mexico.
 #' @param data data frame of iNaturalist observations
-#' @param imagePreview Logical if TRUE the image of the record will be shown.
+#' @param imgPreview Logical if TRUE the image of the record will be shown.
 #' @return a leaflet map object
 #' @examples \dontrun{
 #' puma_occs <- get_inat_obs(query = "Puma concolor",
 #'                           geo = T,maxresults = 10000,
 #'                          captive_cultivated = F)
-#' inat_map(puma_occs)
+#' inat_map(puma_occs, imgPreview=TRUE)
 #'
 #' }
 #' @import leaflet leaflet

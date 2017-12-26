@@ -18,7 +18,7 @@
 #' within.  It is a vector in the form of southern latitude, western longitude, northern latitude,
 #' and easter longitude
 #' @param maxresults the maximum number of results to return
-#' @param captive_cultivated return captive or cultivated records.
+#' @param captive_cultivated If TRUE return captive or cultivated records; if "b" returns both captive and not captive records.
 #' @param meta (logical) If TRUE, the output of this function is a list with metadata on the output
 #' and a data.frame of the data. If FALSE (default), just the data.frame.
 #' @note Filtering doesn't always work with the query parameter for some reason (a problem on
@@ -148,10 +148,14 @@ get_inat_obs <- function(query=NULL,taxon_name = NULL,taxon_id = NULL,quality=NU
 
   if(is.data.frame(data_out)){
     not_captive_index <- which(data_out$captive_cultivated=="false")
-    if(!captive_cultivated){
+    if(captive_cultivated=="b"){
+      data_out
+    }
+
+    if(captive_cultivated==FALSE){
       data_out <- data_out[not_captive_index,]
     }
-    if(captive_cultivated){
+    if(captive_cultivated==TRUE){
       data_out <- data_out[-not_captive_index,]
     }
 

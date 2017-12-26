@@ -36,7 +36,7 @@ and easter longitude}
 
 \item{maxresults}{the maximum number of results to return}
 
-\item{captive_cultivated}{return captive or cultivated records.}
+\item{captive_cultivated}{If TRUE return captive or cultivated records; if "b" returns both captive and not captive records.}
 
 \item{meta}{(logical) If TRUE, the output of this function is a list with metadata on the output
 and a data.frame of the data. If FALSE (default), just the data.frame.}

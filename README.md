@@ -26,7 +26,7 @@ puma_occs <- get_inat_obs(query = "Puma concolor",
 Plot a leaflet map that displays basic information like species description and naturalita photos.
 
 ``` r
-inat_map(puma_occs,imagePreview=T)
+inat_map(puma_occs,imgPreview=T)
 ```
 
 <a href="https://luismurao.github.io/puma_example.html" target="_blank"><div style='text-align: center;'><img src="img/puma_concolor.png" height='700' width='1200' align='middle' ></div></a>
